@@ -9,5 +9,8 @@
     "ip_test": {
       "url": "https://api.ipify.org/?format=json"
     }
-  }
+  },
+  "authorized_arns": [
+    "arn:aws:iam::229133519362:user/jakedahl"
+  ]
 }

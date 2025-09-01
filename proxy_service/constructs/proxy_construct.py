@@ -97,6 +97,28 @@ class ProxyConstruct(Construct):
 		f = open(os.getcwd() + '/proxy_service/configs/config.json', 'r')
 		j = json.load(f)
 
+		# Create IAM role for authorized users
+		authorized_arns = j.get('authorized_arns', [])
+		
+		proxy_access_role = aws_cdk.aws_iam.Role(
+			self,
+			'proxy-access-role-{}'.format(id_suffix),
+			assumed_by=aws_cdk.aws_iam.CompositePrincipal(
+				*[aws_cdk.aws_iam.ArnPrincipal(arn) for arn in authorized_arns]
+			),
+			inline_policies={
+				'ProxyAccessPolicy': aws_cdk.aws_iam.PolicyDocument(
+					statements=[
+						aws_cdk.aws_iam.PolicyStatement(
+							effect=aws_cdk.aws_iam.Effect.ALLOW,
+							actions=['execute-api:Invoke'],
+							resources=[self.rest_api.arn_for_execute_api('*', '/proxy/*')]
+						)
+					]
+				)
+			}
+		)
+
 		# Generate proxy targets.
 		for proxy in j['proxies']:
 			random_ip = get_random_us_ip()
@@ -117,7 +139,7 @@ class ProxyConstruct(Construct):
 
 			proxy_subresource.add_method(
 				http_method='ANY',
-				authorization_type=apigateway.AuthorizationType.NONE,
+				authorization_type=apigateway.AuthorizationType.IAM,
 				request_parameters={
 					"method.request.path.proxy": True,
 					"method.request.header.X-My-X-Forwarded-For": True
@@ -139,7 +161,7 @@ class ProxyConstruct(Construct):
 
 			proxy_wc_resource.add_method(
 				http_method='ANY',
-				authorization_type=apigateway.AuthorizationType.NONE,
+				authorization_type=apigateway.AuthorizationType.IAM,
 				request_parameters={
 					"method.request.path.proxy": True,
 					"method.request.header.X-My-X-Forwarded-For": True
