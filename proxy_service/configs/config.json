@@ -1,0 +1,7 @@
+{
+  "proxies": {
+    "draftkings": {
+      "url": "https://api.draftkings.com"
+    }
+  }
+}
