@@ -1,16 +1,6 @@
 
-# Welcome to your CDK Python project!
-
-This is a blank project for CDK development with Python.
-
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
-
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+# Welcome to your forward proxy.
+### This project generates a forward proxy endpoint which allows web requests to be made to a target with random ip addresses.
 
 To manually create a virtualenv on MacOS and Linux:
 
@@ -56,3 +46,8 @@ command.
  * `cdk docs`        open CDK documentation
 
 Enjoy!
+
+
+Once deployed, simply use the generated endpoint in place.
+
+E.g.https://zwzdw9k421.execute-api.us-east-1.amazonaws.com/prod/proxy/google_proxy -> https://google.com

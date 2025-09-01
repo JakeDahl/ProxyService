@@ -6,9 +6,6 @@
     "draftkings_api": {
       "url": "https://sportsbook-nash.draftkings.com"
     },
-    "draftkings_contest_api": {
-      "url": "https://sportsbook-ca-on.draftkings.com"
-    },
     "ip_test": {
       "url": "https://api.ipify.org/?format=json"
     }
