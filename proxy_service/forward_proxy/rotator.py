@@ -11,7 +11,6 @@ class Proxy:
 	def __init__(self):
 		config_bucket = os.environ['config_bucket']
 		self.rest_api_id = os.environ['rest_api_id']
-		self.proxy_queue_url = os.environ['proxy_queue']
 
 		self.uid = uuid.uuid4().hex
 		self.apig = boto3.client('apigateway')

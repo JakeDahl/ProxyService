@@ -5,6 +5,9 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from proxy_service.constructs.proxy_construct import ProxyConstruct
+
+
 class ProxyServiceStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
@@ -12,8 +15,4 @@ class ProxyServiceStack(Stack):
 
         # The code that defines your stack goes here
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "ProxyServiceQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+        pc = ProxyConstruct(self, 'proxy-construct', id_suffix='main')

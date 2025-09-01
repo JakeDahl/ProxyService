@@ -45,8 +45,8 @@ class ProxyConstruct(Construct):
 
 		self.config_bucket = aws_cdk.aws_s3.Bucket(
 			self,
-			'freebie-gen-bucket',
-			bucket_name='freebie-gen-config-{}'.format(id_suffix),
+			'config-bucket',
+			# bucket_name='freebie-gen-config-{}'.format(id_suffix),
 			removal_policy=RemovalPolicy.DESTROY,
 			auto_delete_objects=True
 		)
@@ -56,7 +56,7 @@ class ProxyConstruct(Construct):
 			id='config_deployment',
 			retain_on_delete=False,
 			destination_bucket=self.config_bucket,
-			sources=[s3dep.Source.asset('thesystem/configs')],
+			sources=[s3dep.Source.asset('proxy_service/configs')],
 			destination_key_prefix='configs'
 		)
 
@@ -66,31 +66,11 @@ class ProxyConstruct(Construct):
 			retention=logs.RetentionDays.ONE_DAY
 		)
 
-		# stage.accessLogSettings = {
-		# 	destinationArn: logGroup.logGroupArn,
-		# 	format: JSON.stringify({
-		# 		requestId: '$context.requestId',
-		# 		userAgent: '$context.identity.userAgent',
-		# 		sourceIp: '$context.identity.sourceIp',
-		# 		requestTime: '$context.requestTime',
-		# 		httpMethod: '$context.httpMethod',
-		# 		path: '$context.path',
-		# 		status: '$context.status',
-		# 		responseLength: '$context.responseLength',
-		# 	}),
-		# };
-
 		self.rest_api = apigateway.RestApi(
 			self,
-			'scraper-proxy-api-{}'.format(id_suffix),
-			rest_api_name='scraper-gen-api-{}'.format(id_suffix),
+			'proxy-api-{}'.format(id_suffix),
+			rest_api_name='proxy-api-{}'.format(id_suffix),
 			cloud_watch_role=True,
-			# default_cors_preflight_options=apigateway.CorsOptions(
-			# 	allow_origins=apigateway.Cors.ALL_ORIGINS,
-			# 	allow_methods=apigateway.Cors.ALL_METHODS,
-			# 	allow_headers=apigateway.Cors.DEFAULT_HEADERS,
-			# 	max_age=aws_cdk.Duration.days(1)
-			# ),
 			deploy_options={
 				"access_log_destination": apigateway.LogGroupLogDestination(log_group),
 				"access_log_format": apigateway.AccessLogFormat.custom(
@@ -112,11 +92,9 @@ class ProxyConstruct(Construct):
 
 		self.rest_api.node.add_dependency(dep)
 
-		# self.rest_api.deployment_stage.
-
 		proxy_resource = self.rest_api.root.add_resource('proxy')
 
-		f = open(os.getcwd() + '/thesystem/configs/config.json', 'r')
+		f = open(os.getcwd() + '/proxy_service/configs/config.json', 'r')
 		j = json.load(f)
 
 		# Generate proxy targets.
@@ -195,7 +173,7 @@ class ProxyConstruct(Construct):
 			memory_size=128,
 			architecture=_lambda.Architecture.ARM_64,
 			code=_lambda.Code.from_asset(
-				path="src/forward_proxy",
+				path="proxy_service/forward_proxy",
 				bundling=BundlingOptions(
 					image=_lambda.Runtime.PYTHON_3_11.bundling_image,
 					command=[

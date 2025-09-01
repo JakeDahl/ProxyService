@@ -4,20 +4,9 @@ import requests
 import json
 import random
 
-# The code to do this pull if ever needed again...
-# req = requests.Session()
-#
-# url = 'https://cdn-lite.ip2location.com/datasets/US.json'
-#
-# resp = req.get(url)
-# f = open('us-ip-range.json', 'w')
-# f.write(json.dumps(resp.json()))
-# f.close()
-
-
 def get_random_us_ip():
 	# 'https://cdn-lite.ip2location.com/datasets/US.json'
-	f = open(os.getcwd() + '/thesystem/configs/us-ip-range.json', 'r')
+	f = open(os.getcwd() + '/proxy_service/configs/us-ip-range.json', 'r')
 	j = json.loads(f.read())
 
 	rand_idx = random.randrange(0, len(j['data']))
